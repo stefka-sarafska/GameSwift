@@ -11,16 +11,7 @@ public class Battle {
         this.person = person;
     }
 
-    public void updateScore() {
-        Player hero = createBattleAndGetHero();
-        if (hero instanceof Troll) {
-            trollScore++;
-        } else if (hero instanceof Person) {
-            personScore++;
-        }
-    }
-
-    public Player createBattleAndGetHero() {
+    public void createBattleAndGetHero() {
         while (person.getEndurance() > 0 && troll.getEndurance() > 0) {
             rounds++;
             if (rounds % 2 == 1) {
@@ -29,13 +20,25 @@ public class Battle {
                 troll.setEndurance(troll.getEndurance() - 10);
             }
         }
+
+    }
+
+    public void updateScore() {
+        Player hero = getAliveHero();
+        if (hero instanceof Troll) {
+            trollScore++;
+        } else if (hero instanceof Person) {
+            personScore++;
+        }
+    }
+
+    private Player getAliveHero() {
         if (troll.getEndurance() > 0) {
             return troll;
         } else if (person.getEndurance() > 0) {
             return person;
         }
         return null;
-
     }
 
     public static int getRounds() {
