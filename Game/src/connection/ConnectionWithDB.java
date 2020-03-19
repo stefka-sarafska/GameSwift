@@ -12,7 +12,7 @@ public class ConnectionWithDB {
 
 	public static List<String> getPersonCharachteristics(int personId) {
 		List<String> personInfo = new ArrayList<>();
-		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/battle", "root", "1234567890");
+		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/battle", "root", "123456789");
 				PreparedStatement ps = con.prepareStatement("select * from battle.people where person_id = ?;")) {
 			ps.setInt(1, personId);
 			ResultSet rs = ps.executeQuery();
@@ -21,7 +21,6 @@ public class ConnectionWithDB {
 				personInfo.add(rs.getString(3));
 				personInfo.add(rs.getString(4));
 			}
-
 		} catch (SQLException ex) {
 			System.out.println("Cannot get this person, because " + ex.getMessage());
 		}
@@ -30,7 +29,7 @@ public class ConnectionWithDB {
 
 	public static List<String> getTrollCharachteristics(int trollId) {
 		List<String> trollInfo = new ArrayList<>();
-		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/battle", "root", "1234567890");
+		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/battle", "root", "123456789");
 				PreparedStatement ps = con.prepareStatement("select * from battle.trolls where troll_id = ?;")) {
 			ps.setInt(1, trollId);
 			ResultSet rs = ps.executeQuery();
@@ -47,7 +46,7 @@ public class ConnectionWithDB {
 	}
 
 	public static void setInfoFromBattle(int numberOfPeople, int numberOfTrolls, int peoplePoints, int trollsPoints) {
-		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/battle", "root", "1234567890");
+		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/battle", "root", "123456789");
 				PreparedStatement ps = con.prepareStatement(
 						"insert into battle.batlle_information (people_number, trolls_number, people_points, trolls_points) values (?, ?, ?, ?) ;")) {
 			ps.setInt(1, numberOfPeople);

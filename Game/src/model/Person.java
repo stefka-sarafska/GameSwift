@@ -1,4 +1,4 @@
-
+package model;
 public class Person extends Player {
 
 	public Person(String name, int power, int endurance) {

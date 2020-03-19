@@ -1,3 +1,4 @@
+package model;
 
 public class Troll extends Player{
 
