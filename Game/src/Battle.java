@@ -44,4 +44,21 @@ public class Battle {
     public static int getRounds() {
         return rounds;
     }
+
+    public static int getPersonScore() {
+        return personScore;
+    }
+
+    public static int getTrollScore() {
+        return trollScore;
+    }
+
+    public Troll getTroll() {
+        return troll;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
 }
