@@ -34,8 +34,5 @@ public abstract class Player {
 	public void setEndurance(int endurance) {
 		this.endurance = endurance;
 	}
-	
-	
-
 
 }

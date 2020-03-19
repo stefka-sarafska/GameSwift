@@ -1,6 +1,6 @@
 
 public class Battle {
-	public static int rounds = 0;
+	public int rounds = 0;
 	public static int personScore = 0;
 	public static int trollScore = 0;
 	Troll troll;
@@ -11,7 +11,7 @@ public class Battle {
 		this.person = person;
 	}
 
-	public void createBattleAndGetHero() {
+	public void createBattle() {
 		while (person.getEndurance() > 0 && troll.getEndurance() > 0) {
 			rounds++;
 			if (rounds % 2 == 1) {
@@ -41,7 +41,7 @@ public class Battle {
 		return null;
 	}
 
-	public static int getRounds() {
+	public  int getRounds() {
 		return rounds;
 	}
 
