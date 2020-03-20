@@ -1,5 +1,7 @@
 package connection;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,7 +14,7 @@ public class Main {
 	private static int allRoundsCounter = 0;
 
 	public static void main(String[] args) throws SQLException {
-
+        ConnectionWithDB.truncateTableBattleInfo();
 		menu();
 
 	}
@@ -51,7 +53,7 @@ public class Main {
 					battle.getTrollScore());
 			Battle.printInfoPerBattle(allRoundsCounter);
 		}
-		ConnectionWithDB.printFinalResult(allRoundsCounter);
+		ConnectionWithDB.printFinalResultAndWriteItToFile(allRoundsCounter);
 	}
 
 	private static Troll createTrollFromDB(List<String> playerInfo) {
@@ -67,4 +69,5 @@ public class Main {
 		int endurance = Integer.parseInt(playerInfo.get(2));
 		return new Person(name, power, endurance);
 	}
+	
 }
