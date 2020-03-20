@@ -4,16 +4,17 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-
 import model.Battle;
 import model.Person;
 import model.Troll;
 
 public class Main {
+	private static int allRoundsCounter = 0;
+
 	public static void main(String[] args) throws SQLException {
 
 		menu();
-		ConnectionWithDB.printInfo(1);
+
 	}
 
 	private static void menu() throws SQLException {
@@ -24,13 +25,13 @@ public class Main {
 
 		System.out.println("Please enter the number of People: ");
 		int peopleCount = Integer.parseInt(scanner.nextLine());
-		for (int i = 0; i < peopleCount; i++) {
-			people.add(createPerson(ConnectionWithDB.getPersonCharachteristics(i)));
+		for (int i = 1; i <= peopleCount; i++) {
+			people.add(createPersonFromDB(Person.getPersonCharachteristicsFromDB(i)));
 		}
 		System.out.println("Please enter the number of trolls: ");
 		int trollCount = Integer.parseInt(scanner.nextLine());
-		for (int i = 0; i < trollCount; i++) {
-			trolls.add(createTroll(ConnectionWithDB.getTrollCharachteristics(i)));
+		for (int i = 1; i <= trollCount; i++) {
+			trolls.add(createTrollFromDB(Troll.getTrollCharachteristicsFromDB(i)));
 		}
 		battle(trolls, people);
 
@@ -38,6 +39,7 @@ public class Main {
 
 	private static void battle(List<Troll> trolls, List<Person> people) {
 		while (trolls.size() > 0 && people.size() > 0) {
+			allRoundsCounter++;
 			Battle battle = new Battle(trolls.get(0), people.get(0));
 			battle.createBattle();
 			if (battle.getAliveHero() instanceof Person) {
@@ -45,20 +47,21 @@ public class Main {
 			} else if (battle.getAliveHero() instanceof Troll) {
 				people.remove(0);
 			}
-			ConnectionWithDB.setInfoFromBattle(people.size(), trolls.size(), Battle.getPersonScore(),
-					Battle.getTrollScore());
-
+			Battle.setInfoPerBattle(people.size(), trolls.size(), battle.getPersonScore(),
+					battle.getTrollScore());
+			Battle.printInfoPerBattle(allRoundsCounter);
 		}
+		ConnectionWithDB.printFinalResult(allRoundsCounter);
 	}
 
-	private static Troll createTroll(List<String> playerInfo) {
+	private static Troll createTrollFromDB(List<String> playerInfo) {
 		String name = playerInfo.get(0);
 		int power = Integer.parseInt(playerInfo.get(1));
 		int endurance = Integer.parseInt(playerInfo.get(2));
 		return new Troll(name, power, endurance);
 	}
 
-	private static Person createPerson(List<String> playerInfo) {
+	private static Person createPersonFromDB(List<String> playerInfo) {
 		String name = playerInfo.get(0);
 		int power = Integer.parseInt(playerInfo.get(1));
 		int endurance = Integer.parseInt(playerInfo.get(2));

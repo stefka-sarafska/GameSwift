@@ -5,82 +5,57 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class ConnectionWithDB {
+	// private static List<String> trollInfo;
+	// private static List<String> personInfo;
 
-	public static List<String> getPersonCharachteristics(int personId) {
-		List<String> personInfo = new ArrayList<>();
-		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/battle", "root", "123456789");
-				PreparedStatement ps = con.prepareStatement("select * from battle.people where person_id = ?;")) {
-			ps.setInt(1, personId);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				personInfo.add(rs.getString(2));
-				personInfo.add(rs.getString(3));
-				personInfo.add(rs.getString(4));
-			}
-		} catch (SQLException ex) {
-			System.out.println("Cannot get this person, because " + ex.getMessage());
-		}
-		return personInfo;
-	}
-
-	public static List<String> getTrollCharachteristics(int trollId) {
-		List<String> trollInfo = new ArrayList<>();
-		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/battle", "root", "123456789");
-				PreparedStatement ps = con.prepareStatement("select * from battle.trolls where troll_id = ?;")) {
-			ps.setInt(1, trollId);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				trollInfo.add(rs.getString(2));
-				trollInfo.add(rs.getString(3));
-				trollInfo.add(rs.getString(4));
-			}
-
-		} catch (SQLException ex) {
-			System.out.println("Cannot get this troll, because " + ex.getMessage());
-		}
-		return trollInfo;
-	}
-
-	public static void setInfoFromBattle(int numberOfPeople, int numberOfTrolls, int peoplePoints, int trollsPoints) {
-		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/battle", "root", "123456789");
-				PreparedStatement ps = con.prepareStatement(
-						"insert into battle.batlle_information (people_number, trolls_number, people_points, trolls_points) values (?, ?, ?, ?) ;")) {
-			ps.setInt(1, numberOfPeople);
-			ps.setInt(2, numberOfTrolls);
-			ps.setInt(3, peoplePoints);
-			ps.setInt(4, trollsPoints);
-			ps.execute();
-		} catch (SQLException ex) {
-			System.out.println("Cannot set info, because " + ex.getMessage());
-		}
-	}
-
-	public static void printInfo(int id) {
+	public static int getTrollFinalScore(int allRounds) throws SQLException {
+		int trollFinalScore = 0;
 		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/battle", "root", "123456789");
 				PreparedStatement ps = con.prepareStatement("select * from battle.batlle_information where id = ?;")) {
-			ps.setInt(1, id);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				int personPoins = rs.getInt(4);
-				int trolPoins = rs.getInt(5);
-				System.out.println("Troll poins: " + trolPoins);
-				System.out.println("People poins: " + personPoins);
-				if (personPoins < trolPoins) {
-					System.out.println("Trol wins");
-				} else if (personPoins > trolPoins) {
-					System.out.println("Person wins");
-				} else {
-					System.out.println("Equality");
+			for (int i = 1; i <= allRounds; i++) {
+				ps.setInt(1, i);
+				ResultSet rs = ps.executeQuery();
+				while (rs.next()) {
+					trollFinalScore += rs.getInt(5);
 				}
-
 			}
+		}
+		return trollFinalScore;
+	}
 
-		} catch (SQLException ex) {
-			System.out.println("Cannot get this troll, because " + ex.getMessage());
+	public static int getPersonFinalScore(int allRounds) throws SQLException {
+		int personFinalScore = 0;
+		try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/battle", "root", "123456789");
+				PreparedStatement ps = con.prepareStatement("select * from battle.batlle_information where id = ?;")) {
+			for (int i = 1; i <= allRounds; i++) {
+				ps.setInt(1, i);
+				ResultSet rs = ps.executeQuery();
+				while (rs.next()) {
+					personFinalScore += rs.getInt(4);
+				}
+			}
+		}
+		return personFinalScore;
+	}
+
+	public static void printFinalResult(int allRounds) {
+		try {
+			System.out.println("____________________________");
+			System.out.println("Final result: ");
+			if (getPersonFinalScore(allRounds) < getTrollFinalScore(allRounds)) {
+				System.out
+						.println(getTrollFinalScore(allRounds) + ":" + getPersonFinalScore(allRounds) + " for trolls");
+			} else if (getPersonFinalScore(allRounds) > getTrollFinalScore(allRounds)) {
+				System.out
+						.println(getPersonFinalScore(allRounds) + ":" + getTrollFinalScore(allRounds) + " for people");
+			} else {
+				System.out.println(getPersonFinalScore(allRounds) + ":" + getTrollFinalScore(allRounds) + " equality");
+			}
+		} catch (SQLException e) {
+			System.out.println("Cannot print info, because " + e.getMessage());
 		}
 	}
 
